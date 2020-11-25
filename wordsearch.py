@@ -28,11 +28,12 @@ class WordSearch:
     density     Stop generating when this density is reached (default: .7).
 
     """
-    def __init__(self, word_list, size, directions, title, difficulty="", density=.7):
+    def __init__(self, word_list, size, directions, title, difficulty="", density=.7, pre=""):
 
         self.title = title
         self.difficulty = difficulty
         self.word_list = word_list
+        self.pre = pre
         
         width = size
         height = size
@@ -109,22 +110,22 @@ class WordSearch:
         html.append ("</Table>")
         
         strHtml = "".join(html)
-        with open(f"{self.difficulty}.html", "w") as f:
+        with open(f"{self.pre}-{self.difficulty}.html", "w") as f:
             f.write(strHtml)
         
         return strHtml
         
-def make_wordsearch_pack(wordlist, title):   
-    ws_easy = WordSearch(wordlist, 15, EASY_DIRECTIONS, title, "Easy")
-    ws_medium = WordSearch(wordlist, 15, MEDIUM_DIRECTIONS, title, "Medium")
-    ws_hard = WordSearch(wordlist, 20, HARD_DIRECTIONS, title, "Hard")
+def make_wordsearch_pack(wordlist, title, pre=""):   
+    ws_easy = WordSearch(wordlist, 15, EASY_DIRECTIONS, title, "Easy", pre=pre)
+    ws_medium = WordSearch(wordlist, 15, MEDIUM_DIRECTIONS, title, "Medium", pre=pre)
+    ws_hard = WordSearch(wordlist, 20, HARD_DIRECTIONS, title, "Hard", pre=pre)
     
     pack = [ws_easy, ws_medium, ws_hard]
     
     for p in pack:
         p.to_html()
         
-    with open("answers.txt", "w") as f:
+    with open(f"{pre}_answers.txt", "w") as f:
             f.write("Notes / Answers.\n=======================================\n")
             f.write("Answers shown as word, row, column (starting at 0) and direction.\n\n")
             f.write("Easy puzzle has words vertical and horizontal (left to right, top to bottom).\n\n")
@@ -137,6 +138,11 @@ def make_wordsearch_pack(wordlist, title):
             f.write(json.dumps(ws_medium.words))
             f.write("\n\nDifficult\n")
             f.write(json.dumps(ws_hard.words))
+            
+def make_worksearch_batch(batch):
+    for b in batch:
+        print(b)
+        make_wordsearch_pack(b['wordlist'], b['title'], b['file_prefix'])
         
     
     
