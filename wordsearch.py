@@ -28,18 +28,21 @@ class WordSearch:
     density     Stop generating when this density is reached (default: .7).
 
     """
-    def __init__(self, word_list, size, directions, title, difficulty="", density=.7, pre=""):
+    def __init__(self, word_list, size, directions, title, difficulty="", density=.7, pre="", seed=1):
 
         self.title = title
         self.difficulty = difficulty
         self.word_list = word_list
         self.pre = pre
+        self.seed = seed
         
         width = size
         height = size
         
         # Check arguments and load word list.
         max_len = min(width, height)
+        
+        random.seed(seed)
         random.shuffle(word_list)
 
         # Initially empty grid and list of words.
@@ -92,22 +95,25 @@ class WordSearch:
         wordlist = self.word_list
         arr = np.array(self.puzzle)
 
-        html = [f"<H1>{self.title}: ({self.difficulty})</H1><P>"]
+        style = open('style.html', 'r').read()
+        html = ["<HTML>"]
+        html.append(style)
+        html.append(f"<H1>{self.title}: ({self.difficulty})</H1><P>")
         
-        html.append (f"<table>")
+        html.append (f"<table class='board'>")
         rows, columns = arr.shape
         for i in range(rows):
             html.append(f"<tr>")
             for j in range(columns):
                 val = arr[i, j]
-                html.append(f"<td>{val}</td>")
+                html.append(f"<td class='piece'>{val}</td>")
             html.append(f"</tr>")
         html.append("</table>")
         html.append (f"<H2>Wordlist</H2>")
         html.append ("<Table>")
         for i in range(10):
             html.append(f"<tr><td>{i+1}</td><td width=125px style=\"text-align:left\">{wordlist[i]}</td><td>{i+11}</td><td width=125px style=\"text-align:left\">{wordlist[i+10]}</td></tr>")
-        html.append ("</Table>")
+        html.append (f"</Table><H3>Layout({self.seed})</H3></HTML>")
         
         strHtml = "".join(html)
         with open(f"{self.pre}-{self.difficulty}.html", "w") as f:
