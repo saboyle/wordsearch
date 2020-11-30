@@ -1,4 +1,4 @@
-# https://codereview.stackexchange.com/questions/92649/word-search-generator
+# Inspired by: https://codereview.stackexchange.com/questions/92649/word-search-generator
 import numpy as np
 import json
 import random
